@@ -196,6 +196,7 @@ jobs:
       repo_name: ${{ needs.metadata.outputs.reponame }}
       workspace: "rc"
       application_tag: ${{ needs.tag-release.outputs.release_tag }}
+      release_build: true
       type: "app"
     secrets: inherit
 
@@ -225,12 +226,14 @@ jobs:
     needs:
       - metadata
       - tag-release
-      - restore-dynamodb-from-s3
+      - deploy-data-migration-service
+      - deploy-frontend-services
     uses: ./.github/workflows/service-automation-test.yaml
     with:
       environment: ${{ needs.metadata.outputs.environment }}
       workspace: "rc"
       tag: ${{ needs.tag-release.outputs.release_tag }}
+      commit_hash: ${{ needs.metadata.outputs.commit_hash }}
       test_tag: "ftrs-pipeline"
       test_type: "api"
       type: app
