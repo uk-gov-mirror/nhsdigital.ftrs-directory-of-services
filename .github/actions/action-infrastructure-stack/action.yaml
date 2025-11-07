@@ -23,7 +23,7 @@ inputs:
     required: false
   commit_hash:
     description: "The commit hash, set by the CI/CD pipeline workflow"
-    required: true
+    required: false
   mgmt_account_id:
     description: "The management account ID for the action"
     required: true

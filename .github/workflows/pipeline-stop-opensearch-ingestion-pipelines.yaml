@@ -1,4 +1,4 @@
-name: Stop OpenSearch Ingestion Pipelines
+name: Stop OpenSearch Ingestion Pipeline
 
 permissions:
   actions: write
