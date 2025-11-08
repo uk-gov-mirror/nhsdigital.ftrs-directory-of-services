@@ -127,7 +127,6 @@ jobs:
 
   manual-approval:
     name: "Manual approval for ${{ needs.metadata.outputs.environment }} environment deployment"
-    if: ${{ needs.plan-infrastructure.outputs.plan_result == 'true' }}
     needs:
       - metadata
       - plan-infrastructure
