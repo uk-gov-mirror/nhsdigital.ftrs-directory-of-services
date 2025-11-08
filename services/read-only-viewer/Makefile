@@ -50,7 +50,7 @@ deploy:
 	if [ "$(RELEASE_BUILD)" = "false" ] ; then \
 		aws s3 cp s3://$(ARTEFACT_BUCKET)/$(WORKSPACE)/$(COMMIT_HASH)/$(SERVICE)-assets-$(APPLICATION_TAG).zip .
 	else \
-		aws s3 cp s3://$(ARTEFACT_BUCKET)/$(RELEASE_DIR)/$(APPLICATION_TAG)//$(SERVICE)-assets-$(APPLICATION_TAG).zip .
+		aws s3 cp s3://$(ARTEFACT_BUCKET)/$(RELEASE_DIR)/$(APPLICATION_TAG)/$(SERVICE)-assets-$(APPLICATION_TAG).zip .
 	fi
 
 	unzip $(SERVICE)-assets-$(APPLICATION_TAG).zip -d ${TEMP_DIRECTORY}
