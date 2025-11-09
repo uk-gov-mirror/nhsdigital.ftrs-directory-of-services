@@ -161,7 +161,7 @@ jobs:
       workspace: default
       application_tag: ${{ inputs.release_tag || 'v1.1.0' }}
       tag: ${{ inputs.release_tag || 'v1.1.0' }}
-      action: plan
+      action: apply
       type: app
       workflow_timeout: 30
     secrets: inherit
