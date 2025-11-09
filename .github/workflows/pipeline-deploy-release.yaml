@@ -11,7 +11,7 @@ on:
     # checkov:skip=CKV_GHA_7:Inputs reviewed and approved
     inputs:
       release_tag:
-        description: "Specify the release tag to be used for deployment (e.g. v1.0.0)"
+        description: "Specify the release tag to be used for deployment (e.g. v1.1.0)"
         required: true
         type: string
       environment:
@@ -36,7 +36,7 @@ jobs:
       - name: "Validate release tag"
         id: validate
         run: |
-          RELEASE_TAG="${{ inputs.release_tag || 'v1.0.0' }}"
+          RELEASE_TAG="${{ inputs.release_tag || 'v1.1.0' }}"
           if [[ ! $RELEASE_TAG =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
             echo "Invalid release tag format: $RELEASE_TAG"
             exit 1
@@ -55,7 +55,7 @@ jobs:
   #     - name: "Derive workspace from release tag"
   #       id: get-workspace
   #       run: |
-  #         RELEASE_WORKSPACE="${{ inputs.release_tag || 'v1.0.0' }}"
+  #         RELEASE_WORKSPACE="${{ inputs.release_tag || 'v1.1.0' }}"
   #         echo "release_workspace=${RELEASE_WORKSPACE//./-}" >> $GITHUB_OUTPUT
 
   metadata:
@@ -66,7 +66,7 @@ jobs:
 
 # TODO restore when ready for account wide infra deployment
   # plan-account-wide-infra:
-  #   name: "Plan account wide infrastructure deployment to ${{ inputs.environment || 'test' }} for release ${{ inputs.release_tag || 'v1.0.0' }}"
+  #   name: "Plan account wide infrastructure deployment to ${{ inputs.environment || 'test' }} for release ${{ inputs.release_tag || 'v1.1.0' }}"
   #   concurrency:
   #     group: "${{ inputs.environment || 'test' }}-default-${{ matrix.name }}-${{matrix.stacks}}"
   #     cancel-in-progress: false
@@ -76,7 +76,7 @@ jobs:
   #   with:
   #     environment: ${{ inputs.environment || 'test' }}
   #     account_type: ${{ needs.metadata.outputs.account_type }}
-  #     tag: ${{ inputs.release_tag || 'v1.0.0' }}
+  #     tag: ${{ inputs.release_tag || 'v1.1.0' }}
   #     action: plan
   #     type: account
   #   secrets: inherit
@@ -92,10 +92,10 @@ jobs:
   #   environment: "${{ inputs.environment || 'test' }}-protected"
   #   steps:
   #     - name: Approval required
-  #       run: echo "Deployment of account wide infra for release ${{ inputs.release_tag || 'v1.0.0' }} to ${{ inputs.environment || 'test' }} paused for manual approval. Please approve in the Actions tab."
+  #       run: echo "Deployment of account wide infra for release ${{ inputs.release_tag || 'v1.1.0' }} to ${{ inputs.environment || 'test' }} paused for manual approval. Please approve in the Actions tab."
 # TODO restore when ready for apply
   # apply-account-wide-infra:
-  #   name: "Apply deployment of ${{ matrix.name }} infrastructure to ${{ matrix.environment }} for release ${{ inputs.release_tag || 'v1.0.0' }}"
+  #   name: "Apply deployment of ${{ matrix.name }} infrastructure to ${{ matrix.environment }} for release ${{ inputs.release_tag || 'v1.1.0' }}"
   #   concurrency:
   #     group: "${{ inputs.environment || 'test' }}-default-${{ matrix.name }}-${{matrix.stacks}}"
   #     cancel-in-progress: false
@@ -107,7 +107,7 @@ jobs:
   #   with:
   #     environment: ${{ inputs.environment || 'test' }}
   #     workspace: "default"
-  #     tag: ${{ inputs.release_tag || 'v1.0.0' }}
+  #     tag: ${{ inputs.release_tag || 'v1.1.0' }}
   #     # stacks: ${{ matrix.stacks }}
   #     action: apply
   #     type: account
@@ -116,9 +116,9 @@ jobs:
 
 
   plan-application-infra:
-    name: "Plan application infrastructure deployment to ${{ inputs.environment || 'test' }} for release ${{ inputs.release_tag || 'v1.0.0' }}"
+    name: "Plan application infrastructure deployment to ${{ inputs.environment || 'test' }} for release ${{ inputs.release_tag || 'v1.1.0' }}"
     concurrency:
-      group: "${{ inputs.environment || 'test' }}-${{ inputs.release_tag || 'v1.0.0'}}"
+      group: "${{ inputs.environment || 'test' }}-${{ inputs.release_tag || 'v1.1.0'}}"
       cancel-in-progress: false
     needs:
       # TODO check need for metadata
@@ -131,14 +131,14 @@ jobs:
     with:
       environment: ${{ inputs.environment || 'test' }}
       workspace: default
-      application_tag: ${{ inputs.release_tag || 'v1.0.0' }}
-      tag: ${{ inputs.release_tag || 'v1.0.0' }}
+      application_tag: ${{ inputs.release_tag || 'v1.1.0' }}
+      tag: ${{ inputs.release_tag || 'v1.1.0' }}
       action: plan
       type: app
     secrets: inherit
 
   manual-approval-application-infra:
-    name: "Manual approval for deployment of application release ${{ inputs.release_tag || 'v1.0.0' }} to ${{ inputs.environment || 'test' }}"
+    name: "Manual approval for deployment of application release ${{ inputs.release_tag || 'v1.1.0' }} to ${{ inputs.environment || 'test' }}"
     if: ${{ needs.plan-application-infra.outputs.plan_result == 'true' }}
     needs:
       - plan-application-infra
@@ -146,12 +146,12 @@ jobs:
     environment: "${{ inputs.environment || 'test' }}-protected"
     steps:
       - name: Approval required
-        run: echo "Deployment of application infra for release ${{ inputs.release_tag || 'v1.0.0' }} to ${{ inputs.environment || 'test' }} paused for manual approval. Please approve in the Actions tab."
+        run: echo "Deployment of application infra for release ${{ inputs.release_tag || 'v1.1.0' }} to ${{ inputs.environment || 'test' }} paused for manual approval. Please approve in the Actions tab."
 
   apply-application-infra:
-    name: "Apply application infrastructure deployment to ${{ inputs.environment || 'test' }} for release ${{ inputs.release_tag || 'v1.0.0' }}"
+    name: "Apply application infrastructure deployment to ${{ inputs.environment || 'test' }} for release ${{ inputs.release_tag || 'v1.1.0' }}"
     concurrency:
-      group: "${{ inputs.environment || 'test' }}-${{ inputs.release_tag || 'v1.0.0' }}"
+      group: "${{ inputs.environment || 'test' }}-${{ inputs.release_tag || 'v1.1.0' }}"
       cancel-in-progress: false
     needs:
       - manual-approval-application-infra
@@ -159,8 +159,8 @@ jobs:
     with:
       environment: ${{ inputs.environment || 'test' }}
       workspace: default
-      application_tag: ${{ inputs.release_tag || 'v1.0.0' }}
-      tag: ${{ inputs.release_tag || 'v1.0.0' }}
+      application_tag: ${{ inputs.release_tag || 'v1.1.0' }}
+      tag: ${{ inputs.release_tag || 'v1.1.0' }}
       action: plan
       type: app
       workflow_timeout: 30
@@ -189,8 +189,8 @@ jobs:
       environment: ${{ inputs.environment || 'test' }}
       repo_name: ${{ needs.metadata.outputs.reponame }}
       workspace: default
-      application_tag: ${{ inputs.release_tag || 'v1.0.0' }}
+      application_tag: ${{ inputs.release_tag || 'v1.1.0' }}
       release_deployment: true
       type: "app"
-      tag: ${{ inputs.release_tag || 'v1.0.0' }}
+      tag: ${{ inputs.release_tag || 'v1.1.0' }}
     secrets: inherit
