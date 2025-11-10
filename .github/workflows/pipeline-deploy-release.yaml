@@ -45,20 +45,6 @@ jobs:
             echo "Release tag format is valid: $RELEASE_TAG"
           fi
 
-  # derive-workspace-from-tag:
-  #   name: "Derive workspace from release tag"
-  #   needs:
-  #     - validate-release-tag
-  #   runs-on: ubuntu-latest
-  #   outputs:
-  #     release_workspace: ${{ steps.get-workspace.outputs.release_workspace }}
-  #   steps:
-  #     - name: "Derive workspace from release tag"
-  #       id: get-workspace
-  #       run: |
-  #         RELEASE_WORKSPACE="${{ inputs.release_tag || 'v1.1.0' }}"
-  #         echo "release_workspace=${RELEASE_WORKSPACE//./-}" >> $GITHUB_OUTPUT
-
   metadata:
     name: "Get CI/CD metadata"
     uses: ./.github/workflows/metadata.yaml
