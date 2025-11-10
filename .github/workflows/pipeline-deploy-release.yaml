@@ -7,6 +7,7 @@ on:
   push:
     branches:
       - task/FTRS-348_Deploy_release_workflow
+
   workflow_dispatch:
     # checkov:skip=CKV_GHA_7:Inputs reviewed and approved
     inputs:
@@ -65,21 +66,46 @@ jobs:
       - validate-release-tag
 
 # TODO restore when ready for account wide infra deployment
-  # plan-account-wide-infra:
-  #   name: "Plan account wide infrastructure deployment to ${{ inputs.environment || 'test' }} for release ${{ inputs.release_tag || 'v1.1.0' }}"
-  #   concurrency:
-  #     group: "${{ inputs.environment || 'test' }}-default-${{ matrix.name }}-${{matrix.stacks}}"
-  #     cancel-in-progress: false
-  #   needs:
-  #     - metadata
-  #   uses: ./.github/workflows/deploy-account-wide-infrastructure.yaml
-  #   with:
-  #     environment: ${{ inputs.environment || 'test' }}
-  #     account_type: ${{ needs.metadata.outputs.account_type }}
-  #     tag: ${{ inputs.release_tag || 'v1.1.0' }}
-  #     action: plan
-  #     type: account
-  #   secrets: inherit
+  update-account-wide-policies:
+    name: "Update account wide policies in ${{ inputs.environment || 'test' }} using release ${{ inputs.release_tag || 'v1.1.0' }}"
+    # concurrency:
+    #   group: "${{ inputs.environment || 'test' }}-default-account-wide-policies"
+    #   cancel-in-progress: false
+    needs:
+      - metadata
+    uses: ./.github/workflows/pipeline-deploy-policies.yaml
+    with:
+      environment: ${{ inputs.environment || 'test' }}
+
+      tag: ${{ inputs.release_tag || 'v1.1.0' }}
+      # action: plan
+      # type: account
+    secrets: inherit
+
+  update-account-wide-infrastructure:
+    name: "Update account wide infrastructure in ${{ inputs.environment || 'test' }} using release ${{ inputs.release_tag || 'v1.1.0' }}"
+    # concurrency:
+    #   group: "${{ inputs.environment || 'test' }}-default-account-wide-policies"
+    #   cancel-in-progress: false
+    needs:
+      - metadata
+      - update-account-wide-policies
+    uses: ./.github/workflows/pipeline-deploy-account-infrastructure.yaml
+    with:
+      environment: ${{ inputs.environment || 'test' }}
+
+      tag: ${{ inputs.release_tag || 'v1.1.0' }}
+      # action: plan
+      # type: account
+    secrets: inherit
+    # uses: ./.github/workflows/deploy-account-wide-infrastructure.yaml
+    # with:
+    #   environment: ${{ inputs.environment || 'test' }}
+    #   account_type: ${{ needs.metadata.outputs.account_type }}
+    #   tag: ${{ inputs.release_tag || 'v1.1.0' }}
+    #   action: plan
+    #   type: account
+    # secrets: inherit
 
 # TODO restore when ready for manual approval
   # manual-approval-account-wide-infra:
@@ -125,6 +151,7 @@ jobs:
       # - metadata
       # TODO replace with apply account wide infra when testing complete
       - validate-release-tag
+      - update-account-wide-infrastructure
       # - plan-account-wide-infra
       # - apply-account-wide-infra
     uses: ./.github/workflows/deploy-application-infrastructure.yaml
