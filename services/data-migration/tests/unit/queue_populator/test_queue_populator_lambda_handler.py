@@ -136,6 +136,8 @@ def test_get_dms_event_batches(
                 "Id": str(record_id),
                 "MessageBody": '{"type":"dms_event","record_id":'
                 + str(record_id)
+                + ',"service_id":'
+                + str(record_id)
                 + ',"table_name":"services","method":"insert"}',
             }
             for record_id in range(1, 11)
@@ -147,6 +149,8 @@ def test_get_dms_event_batches(
             {
                 "Id": str(record_id),
                 "MessageBody": '{"type":"dms_event","record_id":'
+                + str(record_id)
+                + ',"service_id":'
                 + str(record_id)
                 + ',"table_name":"services","method":"insert"}',
             }

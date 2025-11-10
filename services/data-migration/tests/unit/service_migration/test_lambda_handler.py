@@ -23,10 +23,10 @@ def test_lambda_handler(
         data={
             "Records": [
                 {
-                    "body": '{"type": "dms_event", "record_id": 1, "table_name": "test_table", "method": "insert"}'
+                    "body": '{"type": "dms_event", "record_id": 1, "service_id": 1, "table_name": "test_table", "method": "insert"}'
                 },
                 {
-                    "body": '{"type": "dms_event", "record_id": 2, "table_name": "test_table", "method": "update"}'
+                    "body": '{"type": "dms_event", "record_id": 2, "service_id": 2, "table_name": "test_table", "method": "update"}'
                 },
             ]
         }
@@ -40,6 +40,7 @@ def test_lambda_handler(
                 DMSEvent(
                     type="dms_event",
                     record_id=1,
+                    service_id=1,
                     table_name="test_table",
                     method="insert",
                 )
@@ -48,6 +49,7 @@ def test_lambda_handler(
                 DMSEvent(
                     type="dms_event",
                     record_id=2,
+                    service_id=2,
                     table_name="test_table",
                     method="update",
                 )
@@ -70,7 +72,7 @@ def test_lambda_handler_no_app(
     event = {
         "Records": [
             {
-                "body": '{"type": "dms_event", "record_id": 12345, "table_name": "services", "method": "insert"}'
+                "body": '{"type": "dms_event", "record_id": 12345, "service_id": 12345, "table_name": "services", "method": "insert"}'
             }
         ]
     }
@@ -95,7 +97,7 @@ def test_lambda_handler_existing_app(
     event = {
         "Records": [
             {
-                "body": '{"type": "dms_event", "record_id": 12345, "table_name": "services", "method": "insert"}'
+                "body": '{"type": "dms_event", "record_id": 12345, "service_id": 12345, "table_name": "services", "method": "insert"}'
             }
         ]
     }

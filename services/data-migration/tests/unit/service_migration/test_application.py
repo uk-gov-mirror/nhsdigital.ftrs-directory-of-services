@@ -27,7 +27,8 @@ def test_handle_dms_event_invalid_method(
     mock_event = DMSEvent(
         type="dms_event",
         record_id=123,
-        table_name="test_table",
+        service_id=123,
+        table_name="services",
         method="delete",  # Unsupported method
     )
     app.processor.sync_service = mocker.MagicMock()
@@ -44,11 +45,12 @@ def test_handle_dms_event_invalid_method(
                 "event": {
                     "type": "dms_event",
                     "record_id": 123,
-                    "table_name": "test_table",
+                    "service_id": 123,
+                    "table_name": "services",
                     "method": "delete",
                 },
             },
-            "msg": "Unsupported event method: delete",
+            "msg": "Unsupported service event method: delete",
             "reference": "DM_ETL_010",
         }
     ]
@@ -64,6 +66,7 @@ def test_handle_dms_event_invalid_table(
     mock_event = DMSEvent(
         type="dms_event",
         record_id=123,
+        service_id=123,
         table_name="invalid_table",  # Unsupported table
         method="insert",
     )
@@ -82,6 +85,7 @@ def test_handle_dms_event_invalid_table(
                 "event": {
                     "type": "dms_event",
                     "record_id": 123,
+                    "service_id": 123,
                     "table_name": "invalid_table",
                     "method": "insert",
                 },
@@ -102,6 +106,7 @@ def test_handle_dms_event_supported_event(
     mock_event = DMSEvent(
         type="dms_event",
         record_id=123,
+        service_id=123,
         table_name="services",
         method="insert",
     )
@@ -133,6 +138,7 @@ def test_parse_event_dms_event(mock_config: DataMigrationConfig) -> None:
     mock_event = {
         "type": "dms_event",
         "record_id": mock_record_id,
+        "service_id": mock_record_id,
         "table_name": "test_table",
         "method": "insert",
     }
@@ -141,6 +147,7 @@ def test_parse_event_dms_event(mock_config: DataMigrationConfig) -> None:
 
     assert isinstance(parsed_event, DMSEvent)
     assert parsed_event.record_id == mock_record_id
+    assert parsed_event.service_id == mock_record_id
     assert parsed_event.table_name == "test_table"
     assert parsed_event.method == "insert"
     assert parsed_event.type == "dms_event"
@@ -160,53 +167,11 @@ def test_parse_event_invalid_type(
     assert mock_logger.get_log("DM_ETL_009") == [
         {
             "reference": "DM_ETL_009",
+            "msg": "Error parsing event: 5 validation errors for DMSEvent\ntype\n  Input should be 'dms_event' [type=literal_error, input_value='invalid_event', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.12/v/literal_error\nrecord_id\n  Field required [type=missing, input_value={'type': 'invalid_event'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.12/v/missing\nservice_id\n  Field required [type=missing, input_value={'type': 'invalid_event'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.12/v/missing\ntable_name\n  Field required [type=missing, input_value={'type': 'invalid_event'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.12/v/missing\nmethod\n  Field required [type=missing, input_value={'type': 'invalid_event'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.12/v/missing",
             "detail": {
-                "error": "4 validation errors for DMSEvent\n"
-                "type\n"
-                "  Input should be 'dms_event' [type=literal_error, "
-                "input_value='invalid_event', input_type=str]\n"
-                "    For further information visit "
-                "https://errors.pydantic.dev/2.12/v/literal_error\n"
-                "record_id\n"
-                "  Field required [type=missing, input_value={'type': "
-                "'invalid_event'}, input_type=dict]\n"
-                "    For further information visit "
-                "https://errors.pydantic.dev/2.12/v/missing\n"
-                "table_name\n"
-                "  Field required [type=missing, input_value={'type': "
-                "'invalid_event'}, input_type=dict]\n"
-                "    For further information visit "
-                "https://errors.pydantic.dev/2.12/v/missing\n"
-                "method\n"
-                "  Field required [type=missing, input_value={'type': "
-                "'invalid_event'}, input_type=dict]\n"
-                "    For further information visit "
-                "https://errors.pydantic.dev/2.12/v/missing",
-                "event": {
-                    "type": "invalid_event",
-                },
+                "error": "5 validation errors for DMSEvent\ntype\n  Input should be 'dms_event' [type=literal_error, input_value='invalid_event', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.12/v/literal_error\nrecord_id\n  Field required [type=missing, input_value={'type': 'invalid_event'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.12/v/missing\nservice_id\n  Field required [type=missing, input_value={'type': 'invalid_event'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.12/v/missing\ntable_name\n  Field required [type=missing, input_value={'type': 'invalid_event'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.12/v/missing\nmethod\n  Field required [type=missing, input_value={'type': 'invalid_event'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.12/v/missing",
+                "event": {"type": "invalid_event"},
             },
-            "msg": "Error parsing event: 4 validation errors for DMSEvent\n"
-            "type\n"
-            "  Input should be 'dms_event' [type=literal_error, "
-            "input_value='invalid_event', input_type=str]\n"
-            "    For further information visit "
-            "https://errors.pydantic.dev/2.12/v/literal_error\n"
-            "record_id\n"
-            "  Field required [type=missing, input_value={'type': "
-            "'invalid_event'}, input_type=dict]\n"
-            "    For further information visit "
-            "https://errors.pydantic.dev/2.12/v/missing\n"
-            "table_name\n"
-            "  Field required [type=missing, input_value={'type': "
-            "'invalid_event'}, input_type=dict]\n"
-            "    For further information visit "
-            "https://errors.pydantic.dev/2.12/v/missing\n"
-            "method\n"
-            "  Field required [type=missing, input_value={'type': "
-            "'invalid_event'}, input_type=dict]\n"
-            "    For further information visit "
-            "https://errors.pydantic.dev/2.12/v/missing",
         }
     ]
 

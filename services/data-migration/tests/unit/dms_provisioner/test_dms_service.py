@@ -30,10 +30,10 @@ def mock_file_open() -> MagicMock:
     END;
     $function$;
 
-    DROP TRIGGER IF EXISTS ${table_name}_changes_trigger ON ${table_name};
+    DROP TRIGGER IF EXISTS ${services_table_name}_changes_trigger ON ${services_table_name};
 
-    CREATE TRIGGER ${table_name}_changes_trigger
-        AFTER INSERT OR UPDATE OR DELETE ON ${table_name}
+    CREATE TRIGGER ${services_table_name}_changes_trigger
+        AFTER INSERT OR UPDATE OR DELETE ON ${services_table_name}
         FOR EACH ROW
         EXECUTE FUNCTION public.notify_lambda_function();
 

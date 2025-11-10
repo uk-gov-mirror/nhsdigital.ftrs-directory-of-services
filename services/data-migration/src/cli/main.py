@@ -73,6 +73,7 @@ def migrate_handler(  # noqa: PLR0913
             event = DMSEvent(
                 type="dms_event",
                 record_id=service_id,
+                service_id=service_id,
                 method="insert",
                 table_name="services",
             )

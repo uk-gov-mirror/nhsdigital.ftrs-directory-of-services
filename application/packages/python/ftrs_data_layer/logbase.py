@@ -133,7 +133,7 @@ class DataMigrationLogBase(LogBase):
         message="Error parsing event: {error}",
     )
     DM_ETL_010 = LogReference(
-        level=WARNING, message="Unsupported event method: {method}"
+        level=WARNING, message="Unsupported service event method: {method}"
     )
     DM_ETL_011 = LogReference(
         level=WARNING,

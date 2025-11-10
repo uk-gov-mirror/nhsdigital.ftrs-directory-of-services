@@ -36,6 +36,18 @@ class DataMigrationApplication:
         Handle an event from DMS
         This should be a single record change event.
         """
+        match event.table_name:
+            case "services":
+                return self.handle_service_event(event)
+
+        self.logger.log(
+            DataMigrationLogBase.DM_ETL_011,
+            table_name=event.table_name,
+            method=event.method,
+            event=event.model_dump(),
+        )
+
+    def handle_service_event(self, event: DMSEvent) -> None:
         if event.method not in ["insert", "update"]:
             self.logger.log(
                 DataMigrationLogBase.DM_ETL_010,
@@ -44,16 +56,7 @@ class DataMigrationApplication:
             )
             return
 
-        match event.table_name:
-            case "services":
-                return self.processor.sync_service(event.record_id, event.method)
-
-        self.logger.log(
-            DataMigrationLogBase.DM_ETL_011,
-            table_name=event.table_name,
-            method=event.method,
-            event=event.model_dump(),
-        )
+        return self.processor.sync_service(event.record_id, event.method)
 
     def handle_full_sync_event(self) -> None:
         """
