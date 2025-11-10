@@ -39,14 +39,7 @@ on:
       environment:
         description: "Deployment environment"
         required: true
-        default: "dev"
-        type: choice
-        options:
-          - dev
-          - test
-          - sandpit
-          - int
-          - prod
+        type: string
 
 jobs:
   metadata:
