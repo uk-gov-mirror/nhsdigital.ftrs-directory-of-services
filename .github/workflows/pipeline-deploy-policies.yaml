@@ -47,12 +47,12 @@ jobs:
     uses: ./.github/workflows/metadata.yaml
 
   quality-checks:
-    name: "Quality checks for ${{ needs.metadata.outputs.environment }} deployment"
+    name: "Quality checks for ${{ inputs.environment || needs.metadata.outputs.environment }} deployment"
     needs:
       - metadata
     uses: ./.github/workflows/quality-checks.yaml
     with:
-      environment: ${{ needs.metadata.outputs.environment }}
+      environment: ${{ inputs.environment || needs.metadata.outputs.environment }}
       workspace: "default"
       stacks: "['github_runner','account_policies']"
       type: account
@@ -88,18 +88,18 @@ jobs:
 
   manual-approval-permissions:
     # TODO restore github.ref == 'refs/heads/main' && (needs.plan-permissions-infrastructure.outputs.plan_result == 'true')
-    name: "Manual approval for ${{ needs.metadata.outputs.environment }} permissions infrastructure deployment"
+    name: "Manual approval for ${{ inputs.environment || needs.metadata.outputs.environment }} permissions infrastructure deployment"
     if: ${{  (needs.plan-permissions-infrastructure.outputs.plan_result == 'true') }}
     needs:
       - metadata
       - plan-permissions-infrastructure
     runs-on: ubuntu-latest
-    environment: "${{ needs.metadata.outputs.environment }}-protected"
+    environment: "${{ inputs.environment || needs.metadata.outputs.environment }}-protected"
     steps:
       - name: echo github ref
         run: echo "GitHub Ref is ${{ github.ref }}"
       - name: Approval required
-        run: echo "${{ needs.metadata.outputs.environment }} permissions deployment paused for manual approval. Please approve in the Actions tab."
+        run: echo "${{ inputs.environment || needs.metadata.outputs.environment }} permissions deployment paused for manual approval. Please approve in the Actions tab."
 
   apply-permissions-infrastructure:
     name: "Apply ${{ matrix.name }} permissions infrastructure deployment for ${{ matrix.environment }}"
@@ -141,5 +141,5 @@ jobs:
     if: always()
     uses: ./.github/workflows/slack-notifications.yaml
     with:
-      env: ${{ needs.metadata.outputs.environment }}
+      env: ${{ inputs.environment || needs.metadata.outputs.environment }}
     secrets: inherit
