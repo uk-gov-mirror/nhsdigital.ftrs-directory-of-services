@@ -36,6 +36,14 @@ on:
         description: "The type of permissions (e.g., account, app)"
         required: true
         type: string
+      build_timestamp:
+        description: "The build timestamp"
+        required: false
+        type: string
+      build_datetime:
+        description: "The build datetime"
+        required: false
+        type: string
 
 jobs:
   scan-secrets:
