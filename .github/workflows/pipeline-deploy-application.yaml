@@ -8,7 +8,8 @@ on:
   push:
     branches:
       - main
-      - "task/**"
+      # TODO restore when testing over
+      # - "task/**"
       - "dependabot/**"
   workflow_dispatch:
     # checkov:skip=CKV_GHA_7:Inputs reviewed and approved

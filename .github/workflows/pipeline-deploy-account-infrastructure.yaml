@@ -8,7 +8,8 @@ on:
   push:
     branches:
       - "main"
-      - "task/**"
+      # TODO restore when testing over
+      # - "task/**"
     paths:
       - "infrastructure/stacks/account_wide/**"
       - "infrastructure/stacks/terraform_management/**"
