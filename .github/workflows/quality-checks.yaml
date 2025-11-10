@@ -192,7 +192,7 @@ jobs:
         uses: actions/upload-artifact@v5
         if: success() || failure()
         with:
-          name: "checkov.sarif"
+          name: "checkov-${{ inputs.build_timestamp }}.sarif"
           path: "checkov.sarif/"
           if-no-files-found: ignore
 
@@ -226,6 +226,6 @@ jobs:
         uses: actions/upload-artifact@v5
         if: success() || failure()
         with:
-          name: "trivy.sarif"
+          name: "trivy-${{ inputs.build_timestamp }}.sarif"
           path: "trivy.sarif"
           if-no-files-found: ignore

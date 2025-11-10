@@ -87,14 +87,17 @@ jobs:
     secrets: inherit
 
   manual-approval-permissions:
+    # TODO restore github.ref == 'refs/heads/main' && (needs.plan-permissions-infrastructure.outputs.plan_result == 'true')
     name: "Manual approval for ${{ needs.metadata.outputs.environment }} permissions infrastructure deployment"
-    if: ${{ github.ref == 'refs/heads/main' && (needs.plan-permissions-infrastructure.outputs.plan_result == 'true') }}
+    if: ${{  (needs.plan-permissions-infrastructure.outputs.plan_result == 'true') }}
     needs:
       - metadata
       - plan-permissions-infrastructure
     runs-on: ubuntu-latest
     environment: "${{ needs.metadata.outputs.environment }}-protected"
     steps:
+      - name: echo github ref
+        run: echo "GitHub Ref is ${{ github.ref }}"
       - name: Approval required
         run: echo "${{ needs.metadata.outputs.environment }} permissions deployment paused for manual approval. Please approve in the Actions tab."
 

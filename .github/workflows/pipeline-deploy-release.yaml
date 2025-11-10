@@ -68,25 +68,16 @@ jobs:
 # TODO restore when ready for account wide infra deployment
   update-account-wide-policies:
     name: "Update account wide policies in ${{ inputs.environment || 'test' }} using release ${{ inputs.release_tag || 'v1.1.0' }}"
-    # concurrency:
-    #   group: "${{ inputs.environment || 'test' }}-default-account-wide-policies"
-    #   cancel-in-progress: false
     needs:
       - metadata
     uses: ./.github/workflows/pipeline-deploy-policies.yaml
     with:
       environment: ${{ inputs.environment || 'test' }}
-
       tag: ${{ inputs.release_tag || 'v1.1.0' }}
-      # action: plan
-      # type: account
     secrets: inherit
 
   update-account-wide-infrastructure:
     name: "Update account wide infrastructure in ${{ inputs.environment || 'test' }} using release ${{ inputs.release_tag || 'v1.1.0' }}"
-    # concurrency:
-    #   group: "${{ inputs.environment || 'test' }}-default-account-wide-policies"
-    #   cancel-in-progress: false
     needs:
       - metadata
       - update-account-wide-policies
@@ -95,51 +86,7 @@ jobs:
       environment: ${{ inputs.environment || 'test' }}
 
       tag: ${{ inputs.release_tag || 'v1.1.0' }}
-      # action: plan
-      # type: account
     secrets: inherit
-    # uses: ./.github/workflows/deploy-account-wide-infrastructure.yaml
-    # with:
-    #   environment: ${{ inputs.environment || 'test' }}
-    #   account_type: ${{ needs.metadata.outputs.account_type }}
-    #   tag: ${{ inputs.release_tag || 'v1.1.0' }}
-    #   action: plan
-    #   type: account
-    # secrets: inherit
-
-# TODO restore when ready for manual approval
-  # manual-approval-account-wide-infra:
-  #   name: "Manual approval for deployment of account wide infra to  ${{ needs.metadata.outputs.environment }}"
-  #   if: ${{ needs.plan-account-wide-infra.outputs.plan_result == 'true' }}
-  #   needs:
-  #     - metadata
-  #     - plan-account-wide-infra
-  #   runs-on: ubuntu-latest
-  #   environment: "${{ inputs.environment || 'test' }}-protected"
-  #   steps:
-  #     - name: Approval required
-  #       run: echo "Deployment of account wide infra for release ${{ inputs.release_tag || 'v1.1.0' }} to ${{ inputs.environment || 'test' }} paused for manual approval. Please approve in the Actions tab."
-# TODO restore when ready for apply
-  # apply-account-wide-infra:
-  #   name: "Apply deployment of ${{ matrix.name }} infrastructure to ${{ matrix.environment }} for release ${{ inputs.release_tag || 'v1.1.0' }}"
-  #   concurrency:
-  #     group: "${{ inputs.environment || 'test' }}-default-${{ matrix.name }}-${{matrix.stacks}}"
-  #     cancel-in-progress: false
-  #   needs:
-  #     # TODO replace need for metadata with hardcoded ref to mgmt ?
-  #     - metadata
-  #     - manual-approval-account-wide-infra
-  #   uses: ./.github/workflows/deploy-account-wide-infrastructure.yaml
-  #   with:
-  #     environment: ${{ inputs.environment || 'test' }}
-  #     workspace: "default"
-  #     tag: ${{ inputs.release_tag || 'v1.1.0' }}
-  #     # stacks: ${{ matrix.stacks }}
-  #     action: apply
-  #     type: account
-  #     workflow_timeout: 30
-  #   secrets: inherit
-
 
   plan-application-infra:
     name: "Plan application infrastructure deployment to ${{ inputs.environment || 'test' }} for release ${{ inputs.release_tag || 'v1.1.0' }}"
